@@ -16,10 +16,15 @@ class BasicTestServer:
         self.servSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.servSock.bind((BasicTestServer.host, BasicTestServer.port))
 
+    def setServAddr(self, host, port):
+        BasicTestServer.host = host
+        BasicTestServer.port = port
+
     def runServer(self):
         self.servSock.listen()
         self.clntSock, addr = self.servSock.accept()
-        print("Client Address: " + addr)
+        print("Client Address: ", addr)
+
         while True:
             data = self.clntSock.recv(BasicTestServer.bufSize).decode()
             if not data:
@@ -28,6 +33,7 @@ class BasicTestServer:
 
             # echoing
             self.clntSock.sendall(data.encode())
+
         self.stopServer()
 
     def stopServer(self):
