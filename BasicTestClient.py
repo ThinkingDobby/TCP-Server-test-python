@@ -30,9 +30,9 @@ class BasicTestClient:
             receivedData = self.clntSock.recv(BasicTestClient.bufSize).decode()
             print("Received Data: " + receivedData)
 
-        self.stopClient()
+        self.stopClnt()
 
-    def stopClient(self):
+    def stopClnt(self):
         self.clntSock.close()
 
 
