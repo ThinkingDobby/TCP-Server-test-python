@@ -2,7 +2,7 @@ import socket
 
 
 class BasicTestClient:
-    host = "127.0.0.1"
+    host = "192.168.35.69"    # x1
     port = 10001
     bufSize = 1024
 
