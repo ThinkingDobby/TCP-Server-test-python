@@ -2,7 +2,8 @@ import socket
 
 
 class BasicTestServer:
-    host = "192.168.35.69"    # x1
+    host = "192.168.35.243"
+    # host = "192.168.26.33"    # x1 - hotspot
     port = 10001
     bufSize = 1024
 

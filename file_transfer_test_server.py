@@ -9,7 +9,7 @@ class FileTransferTestServer(BasicTestServer):
         self.clntSock, addr = self.servSock.accept()
         print("Client Address: ", addr)
 
-        size = self.clntSock.recv(BasicTestServer.bufSize).decode()
+        size = self.clntSock.recv(BasicTestServer.bufSize)
         size = int(size)
         cwd = os.getcwd()
         with open(cwd + '/' + 'temp.wav', 'wb') as f:
@@ -27,5 +27,5 @@ class FileTransferTestServer(BasicTestServer):
 
 
 if __name__ == "__main__":
-    basicTestServer = BasicTestServer()
+    basicTestServer = FileTransferTestServer()
     basicTestServer.runServer()
