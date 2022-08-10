@@ -1,7 +1,7 @@
 import os
 
 from basic_test_server import BasicTestServer
-from protocols.basic_protocol import BasicProtocol
+from protocols.basic_wav_receiving_protocol import BasicWAVReceivingProtocol
 
 
 class FileTransferTestServer(BasicTestServer):
@@ -10,17 +10,9 @@ class FileTransferTestServer(BasicTestServer):
         self.clntSock, addr = self.servSock.accept()
         print("Client Address: ", addr)
 
-        cwd = os.getcwd()
-        pt = BasicProtocol()
-        with open(cwd + '/' + 'temp.wav', 'wb') as f:
-            data = self.clntSock.recv(BasicTestServer.bufSize)
-            data = data[5:]
-
-            while True:
-                f.write(data)
-                data = self.clntSock.recv(BasicTestServer.bufSize)
-                if not data:
-                    break
+        pt = BasicWAVReceivingProtocol(self.clntSock, BasicTestServer.bufSize)
+        baseData = pt.get()
+        pt.save(baseData)
 
         self.clntSock.sendall("Transfer Finished".encode())
 
