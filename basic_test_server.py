@@ -21,6 +21,7 @@ class BasicTestServer:
         BasicTestServer.host = host
         BasicTestServer.port = port
 
+    # 기본 동작
     def runServer(self):
         self.servSock.listen()
         self.clntSock, addr = self.servSock.accept()
