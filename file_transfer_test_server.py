@@ -21,5 +21,6 @@ class FileTransferTestServer(BasicTestServer):
 
 
 if __name__ == "__main__":
-    basicTestServer = FileTransferTestServer()
-    basicTestServer.runServer()
+    for i in range(10):
+        basicTestServer = FileTransferTestServer()
+        basicTestServer.runServer()
