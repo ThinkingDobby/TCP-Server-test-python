@@ -2,6 +2,7 @@ import os
 
 from basic_test_server import BasicTestServer
 
+# 사용 보류 - 헤더 타입 설정으로 대체 (type 2)
 
 class FileTransferTestServerDS(BasicTestServer):
     def runServer(self):

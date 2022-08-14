@@ -11,9 +11,9 @@ class FileTransferTestServer(BasicTestServer):
         # 프로토콜 이용하는 통신 객체 생성
         pt = BasicWAVReceivingProtocol(self.clntSock, BasicTestServer.bufSize)
         # 데이터 수신
-        baseData = pt.get()
+        header = pt.getHeader()
         # 데이터 저장
-        pt.save(baseData)
+        pt.save(header)
 
         self.clntSock.sendall("Transfer Finished".encode())
 

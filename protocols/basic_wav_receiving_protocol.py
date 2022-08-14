@@ -8,14 +8,17 @@ class BasicWAVReceivingProtocol:
         self._bufSize = bufSize
         self._clntSock = clntSock
         
-    def get(self):
-        # 최초 수신 데이터 (헤더 포함)
-        baseData = self._clntSock.recv(self._bufSize)
-        return baseData
+    def getHeader(self):
+        # 헤더 수신
+        header = self._clntSock.recv(5)
+        return header
 
-    def save(self, baseData):
+    def save(self, header):
         # 타입 확인
-        self._typ = baseData[0]
+        self._typ = header[0]
+        # 파일 크기 계산
+        self._fileSize = self.getSize(header[1:5])
+        # print(self._typ, self._fileSize)
 
         # 오류 (임시)
         if self._typ == -1:
@@ -24,22 +27,20 @@ class BasicWAVReceivingProtocol:
         elif self._typ == 1:
             cwd = os.getcwd()
             with open(cwd + '/' + 'temp.wav', 'wb') as f:   # 파일명 - temp.wav 고정 (임시)
-                # 파일 크기 계산
-                self._fileSize = self.getSize(baseData[1:5])
-                # 헤더 제외 데이터
-                data = baseData[5:]
-                nowSize = len(data)
-                f.write(data)
-
+                nowSize = 0
                 # 저장
-                while nowSize < self._fileSize:
-                    data = self._clntSock.recv(self._bufSize)                    
-                    if not data:
-                        break
+                while True:
+                    data = self._clntSock.recv(self._bufSize)
                     nowSize += len(data)
                     f.write(data)
-
-                # print(self._typ, self._fileSize, nowSize)
+                    if nowSize >= self._fileSize:
+                        break
+        # 파일에 바로 저장
+        elif self._typ == 2:
+            cwd = os.getcwd()
+            with open(cwd + '/' + 'temp.wav', 'wb') as f:  # 파일명 - temp.wav 고정 (임시)
+                while f.write(self._clntSock.recv(self._bufSize)):
+                    pass
 
     # 4바이트 연결해 파일 크기 계산 후 반환
     def getSize(self, data):
