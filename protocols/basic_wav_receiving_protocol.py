@@ -35,12 +35,15 @@ class BasicWAVReceivingProtocol:
                     f.write(data)
                     if nowSize >= self._fileSize:
                         break
-        # 파일에 바로 저장
+        # 메모리에만 저장
         elif self._typ == 2:
-            cwd = os.getcwd()
-            with open(cwd + '/' + 'temp.wav', 'wb') as f:
-                while f.write(self._clntSock.recv(self._bufSize)):
-                    pass
+            nowSize = 0
+            while True:
+                data = self._clntSock.recv(self._bufSize)
+                nowSize += len(data)
+                if nowSize >= self._fileSize:
+                    break
+            print("type2 transfer finished")
         # 푸리에 변환 적용 테스트 - 텍스트 파일에 저장
         elif self._typ == 3:
             cwd = os.getcwd()
