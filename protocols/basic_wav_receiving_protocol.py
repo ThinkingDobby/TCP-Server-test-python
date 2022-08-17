@@ -26,15 +26,18 @@ class BasicWAVReceivingProtocol:
         # 기본 수신
         elif self._typ == 1:
             cwd = os.getcwd()
-            with open(cwd + '/' + 'temp.wav', 'wb') as f:   # 파일명 - temp.wav 고정 (임시)
-                nowSize = 0
-                # 저장
-                while True:
-                    data = self._clntSock.recv(self._bufSize)
-                    nowSize += len(data)
-                    f.write(data)
-                    if nowSize >= self._fileSize:
-                        break
+            f = open(cwd + '/' + 'temp.wav', 'wb')   # 파일명 - temp.wav 고정 (임시)
+            nowSize = 0
+            # 저장
+            while True:
+                data = self._clntSock.recv(self._bufSize)
+                nowSize += len(data)
+                f.write(data)
+                if nowSize >= self._fileSize:
+                    break
+            f.flush()
+            os.fsync(f)
+            f.close()
         # 메모리에만 저장
         elif self._typ == 2:
             nowSize = 0
@@ -43,7 +46,6 @@ class BasicWAVReceivingProtocol:
                 nowSize += len(data)
                 if nowSize >= self._fileSize:
                     break
-            print("type2 transfer finished")
         # 푸리에 변환 적용 테스트 - 텍스트 파일에 저장
         elif self._typ == 3:
             cwd = os.getcwd()
