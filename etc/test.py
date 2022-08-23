@@ -1,3 +1,5 @@
+# 계산용 임시 코드
+
 for i in range(11):
     data = input().rstrip()
     print(data[-8:])

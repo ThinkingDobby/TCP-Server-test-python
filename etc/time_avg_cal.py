@@ -1,3 +1,5 @@
+# 계산용 임시 코드
+
 memo = []
 for _ in range(10):
     data = input().rstrip()

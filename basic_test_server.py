@@ -1,6 +1,8 @@
 import socket
 
 
+# 기본 서버
+# 파일 수신 서버는 file_transfer_test_server.py에 위치
 class BasicTestServer:
     host = "192.168.35.243"
     # host = "192.168.26.33"    # x1 - hotspot

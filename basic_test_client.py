@@ -1,6 +1,7 @@
 import socket
 
 
+# 플러터 앱 구현 전 테스트용 클라이언트
 class BasicTestClient:
     host = "192.168.35.69"    # x1
     port = 10001
