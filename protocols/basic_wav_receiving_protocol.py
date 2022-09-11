@@ -37,23 +37,72 @@ class BasicWAVReceivingProtocol:
             # 저장
             while True:
                 data = self._clntSock.recv(self._bufSize)
-                nowSize += len(data)
 
-                if nowSize >= fileSize:
+                if nowSize + len(data) >= fileSize:
                     f.write(data[:fileSize - nowSize])
                     # 종료코드 확인
-                    if data[fileSize - nowSize:] != b']':
-                        print("End Code Error")
+                    if data[fileSize - nowSize:] == b']':
+                        print("FIN_CODE Received")
+                    nowSize = fileSize
                     break
 
                 f.write(data)
+                nowSize += len(data)
 
             f.flush()
             os.fsync(f)
             f.close()
         # pcm파일 실시간 수신
         elif self._typ == 2:
-            pass
+            # 헤더 모두 수신 (총 6바이트)
+            header += self._clntSock.recv(4)
+            # 메시지 크기
+            msgSize = header[2]
+            # 확장자
+            ext = header[3:6]
+
+            cwd = os.getcwd()
+            f = open(cwd + '/' + 'temp.pcm', 'wb')
+            nowSize = 0
+            # 저장
+            while True:
+                data = self._clntSock.recv(2)
+                if data == b"]]":   # 임시 지정
+                    print("FIN_CODE Received")
+                    break
+                nowSize += len(data)
+                f.write(data)
+
+            f.flush()
+            os.fsync(f)
+            f.close()
+
+        elif self._typ == 3:
+            # 헤더 모두 수신 (총 7바이트)
+            header += self._clntSock.recv(5)
+            # 메시지 크기
+            msgSize = header[2]
+            # 파일 크기
+            nameSize = self.getSize(header[3:7])
+
+            nowSize = 0
+            name = ''
+            # 저장
+            while True:
+                data = self._clntSock.recv(self._bufSize)
+
+                if nowSize + len(data) >= nameSize:
+                    name += data[:nameSize - nowSize].decode('utf-8')
+                    # 종료코드 확인
+                    if data[nameSize - nowSize:] == b']':
+                        print("FIN_CODE Received")
+                    nowSize = nameSize
+                    break
+
+                name += data
+                nowSize += len(data)
+
+            print(name)
 
     # 4바이트 연결해 파일 크기 계산 후 반환
     def getSize(self, data):
